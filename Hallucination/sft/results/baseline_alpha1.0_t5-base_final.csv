@@ -1,0 +1,2 @@
+condition,alpha,model,hallucination_rate,miscalibration_tv,kl_divergence,inaccuracy,subset_fraction,duplications
+baseline,1.0,t5-base,0.10262962962962963,0.04181305096767064,0.03337610465283738,0.5499406352033265,0.05,10

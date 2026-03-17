@@ -101,7 +101,6 @@ def run_experiment(args):
         baseline_epochs = args.num_epochs if args.num_epochs else 95
         training_args = TrainingArguments(
             output_dir=f"cache/{args.condition}_alpha{alpha}",
-            overwrite_output_dir=True,
             num_train_epochs=baseline_epochs,
             per_device_train_batch_size=32,
             gradient_accumulation_steps=32,
@@ -129,7 +128,6 @@ def run_experiment(args):
         # Phase 1: normal training
         phase1_args = TrainingArguments(
             output_dir=f"cache/{args.condition}_alpha{alpha}_phase1",
-            overwrite_output_dir=True,
             num_train_epochs=phase_epochs,
             per_device_train_batch_size=32,
             gradient_accumulation_steps=32,
@@ -172,7 +170,6 @@ def run_experiment(args):
 
         phase2_args = TrainingArguments(
             output_dir=f"cache/{args.condition}_alpha{alpha}_phase2",
-            overwrite_output_dir=True,
             num_train_epochs=phase_epochs,
             per_device_train_batch_size=32,
             gradient_accumulation_steps=32,
