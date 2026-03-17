@@ -37,7 +37,7 @@ class CallBackTrainer(TrainerCallback):
 
     def on_step_end(self, args, state: TrainerState, control: TrainerControl, **kwargs):
         ## only main GPU will write to CSV
-        if state.global_step % 10!= 0 or args.local_rank != 0:
+        if state.global_step % 10 != 0 or args.local_rank not in (0, -1):
             return
 
         step = state.global_step

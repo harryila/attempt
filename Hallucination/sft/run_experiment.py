@@ -29,7 +29,7 @@ from utils import (
     hallucination_analysis, inaccuracy_analysis
 )
 from utils_callback import CallBackTrainer
-from select_subset import select_monofact_subset, select_random_subset
+from select_subset import select_monofact_subset, select_random_subset, select_mixed_subset
 
 
 def run_experiment(args):
@@ -122,7 +122,7 @@ def run_experiment(args):
         trainer.train()
 
     # ========== CONDITION: RANDOM or MONOFACT UPWEIGHT ==========
-    elif args.condition in ("random_upweight", "monofact_upweight"):
+    elif args.condition in ("random_upweight", "monofact_upweight", "mixed_upweight"):
         phase_epochs = args.num_epochs if args.num_epochs else 64
 
         # Phase 1: normal training
@@ -155,8 +155,14 @@ def run_experiment(args):
                 subset_fraction=args.subset_fraction,
                 seed=1217
             )
-        else:  # monofact_upweight
+        elif args.condition == "monofact_upweight":
             indices = select_monofact_subset(
+                train_dataset_final,
+                subset_fraction=args.subset_fraction,
+                seed=1217
+            )
+        else:  # mixed_upweight
+            indices = select_mixed_subset(
                 train_dataset_final,
                 subset_fraction=args.subset_fraction,
                 seed=1217
@@ -238,7 +244,7 @@ def run_experiment(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--condition", type=str, required=True,
-                        choices=["baseline", "random_upweight", "monofact_upweight"])
+                        choices=["baseline", "random_upweight", "monofact_upweight", "mixed_upweight"])
     parser.add_argument("--alpha", type=float, default=1.0,
                         help="Pareto alpha for frequency skew (1, 1.5, or 2)")
     parser.add_argument("--data_path", type=str, default="../data/biography_data.csv")

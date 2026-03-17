@@ -83,3 +83,43 @@ def select_random_subset(train_dataset, subset_fraction=0.05, seed=1217):
     print(f"[RandomSelect] {n_monofacts}/{len(selected)} happen to be monofacts")
     
     return selected
+
+
+def select_mixed_subset(train_dataset, subset_fraction=0.05,
+                        monofact_ratio=0.5, seed=1217):
+    """
+    Select a mixed subset: 50% monofacts + 50% random from remaining examples.
+
+    Args:
+        train_dataset: HF Dataset with columns ["x", "y", "names", "gold", ...]
+        subset_fraction: fraction of dataset to select (default 0.05 = 5%)
+        monofact_ratio: fraction of the subset reserved for monofacts (default 0.5)
+        seed: random seed for reproducibility
+
+    Returns:
+        list of indices into train_dataset to use for upweighting
+    """
+    rng = np.random.default_rng(seed)
+    subset_size = int(subset_fraction * len(train_dataset))
+    mono_budget = subset_size // 2
+    rand_budget = subset_size - mono_budget
+
+    ys = train_dataset["y"]
+    y_counts = Counter(ys)
+    mono_indices = [i for i, y in enumerate(ys) if y_counts[y] == 1]
+
+    mono_selected = rng.choice(
+        mono_indices,
+        size=min(mono_budget, len(mono_indices)),
+        replace=False
+    ).tolist()
+
+    remaining = list(set(range(len(train_dataset))) - set(mono_selected))
+    rand_selected = rng.choice(remaining, size=rand_budget, replace=False).tolist()
+
+    selected = mono_selected + rand_selected
+    n_mono = len([i for i in selected if y_counts[ys[i]] == 1])
+    print(f"[MixedSelect] {len(selected)} examples: "
+          f"{n_mono} monofacts + {len(selected) - n_mono} random")
+
+    return selected
