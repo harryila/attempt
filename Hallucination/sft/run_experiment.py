@@ -80,7 +80,8 @@ def run_experiment(args):
 
     # --- Output paths ---
     os.makedirs("results", exist_ok=True)
-    csv_path = f"results/{args.condition}_alpha{alpha}_{args.model_name.replace('/', '_')}_metrics.csv"
+    dup_tag = f"_dup{args.duplications}" if args.condition in ("random_upweight", "monofact_upweight", "mixed_upweight") else ""
+    csv_path = f"results/{args.condition}{dup_tag}_alpha{alpha}_{args.model_name.replace('/', '_')}_metrics.csv"
 
     callback = CallBackTrainer(
         train_dataset_texts=train_dataset_final,
@@ -236,7 +237,7 @@ def run_experiment(args):
         "subset_fraction": args.subset_fraction,
         "duplications": args.duplications
     }])
-    final_path = f"results/{args.condition}_alpha{alpha}_{args.model_name.replace('/', '_')}_final.csv"
+    final_path = f"results/{args.condition}{dup_tag}_alpha{alpha}_{args.model_name.replace('/', '_')}_final.csv"
     final_results.to_csv(final_path, index=False)
     print(f"Final results saved to {final_path}")
 
