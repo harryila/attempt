@@ -1,0 +1,2 @@
+condition,alpha,model,hallucination_rate,miscalibration_tv,kl_divergence,inaccuracy,subset_fraction,duplications
+monofact_upweight,1.0,t5-base,0.7690370370370371,0.3002300388048509,0.5959180717017419,0.7156426239240137,0.05,2

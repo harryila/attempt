@@ -37,7 +37,8 @@ class CallBackTrainer(TrainerCallback):
 
     def on_step_end(self, args, state: TrainerState, control: TrainerControl, **kwargs):
         ## only main GPU will write to CSV
-        if state.global_step % 10 != 0 or args.local_rank not in (0, -1):
+        # changed 10 to 100 for speed
+        if state.global_step % 100 != 0 or args.local_rank not in (0, -1):
             return
 
         step = state.global_step
@@ -106,6 +107,6 @@ class CallBackTrainer(TrainerCallback):
             f"Inaccuracy={inacc_rate:.4f} "
             f"Loss={loss_rate:.4f} "
             f"Hallucination={hall_rate:.4f} "
-            f"Miscalibration={miscal_rate:.4f}"
+            f"Miscalibration={miscal_rate:.4f} "
             f"Regret={regret:.4f}"
         )
